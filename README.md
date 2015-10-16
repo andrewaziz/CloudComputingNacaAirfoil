@@ -15,4 +15,4 @@ mkdir /home/ubuntu/geo
 convert file to dolfin xml format
 dolfin-convert r1a18n200.msh r1a18n200.xml 
 
-./airfoil  10 0.0001 10. 1 cloudnaca/msh/r1a18n200.xml
+./airfoil  10 0.0001 10. 1 /home/ubuntu/msh/r1a18n200.xml
