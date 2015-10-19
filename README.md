@@ -5,6 +5,9 @@ instance g17-airfoil including fenics-dolfin, gmsh, including packages
 
 ## example
 
+you will get segfault without this export  
+export LC_ALL=C  
+
 make directories to save output from runme.sh
 
 mkdir /home/ubuntu/msh  
