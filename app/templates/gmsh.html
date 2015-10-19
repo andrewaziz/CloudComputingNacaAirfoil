@@ -1,0 +1,27 @@
+<html>
+  <head>
+  </head>
+  <body>
+
+<h1>GMSH</h1>
+    <p># ./runme.sh 0 30 10 200 3</p>
+    <form action="" method="post" name="gmsh">
+        {{ form.csrf_token }} 
+        {{ form.hidden_tag() }}
+        <p>
+            <p>angle start : smallest anglemof attack (degrees)</p>
+            {{ form.angle_start(size=40) }}<br>
+            <p>angle stop  : biggest angle of attack (degrees)</p>
+            {{ form.angle_stop(size=40) }}<br>
+            <p>n angles    : split angle_stop-angle_start into n_angles parts</p>
+            {{ form.angles(size=40) }}<br>
+            <p>n nodes     : number of nodes on one side of airfoil</p>
+            {{ form.nodes(size=40) }}<br>
+            <p>n levels    : number of refinement steps in meshing 0=no refinement 1=one time 2=two times etc...</p>
+            {{ form.levels(size=40) }}<br>
+            </p>
+            <p><input type="submit" value="run gmsh"></p>
+    </form>
+
+  </body>
+</html>
