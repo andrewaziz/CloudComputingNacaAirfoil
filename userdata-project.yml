@@ -12,9 +12,13 @@ packages:
 runcmd:
     - mkdir /home/ubuntu/geo
     - mkdir /home/ubuntu/msh
+    - chown -R ubuntu /home/ubuntu/geo
+    - chown -R ubuntu /home/ubuntu/msh
+    - chmod 777 /home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil
+
     - pip install flower
     - pip install celery
-    - git clone https://github.com/niklasaholm/test.git /home/ubuntu/test
+    - git clone https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
     - pip install -r /home/ubuntu/test/requirements.txt
     - export C_FORCE_ROOT="true"
     - export LC_ALL=C
