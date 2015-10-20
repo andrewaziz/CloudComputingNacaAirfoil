@@ -21,5 +21,5 @@ def convert_msh(filename):
 @celery.task
 def start_airfoil(samples, viscocity, speed, time, filename):
 	filename = '/home/ubuntu/msh/{}'.format(filename)
-	subprocess.call(['/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
+	subprocess.call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
 					 samples, viscocity, speed, time, filename])
