@@ -1,0 +1,21 @@
+#Cloud-config
+
+package_update: true
+package_upgrade: true
+
+
+packages:
+    - git
+    - python-pip
+    - rabbitmq-server
+
+runcmd:
+    - mkdir /home/ubuntu/geo
+    - mkdir /home/ubuntu/msh
+    - git clone https://github.com/niklasaholm/test.git /home/ubuntu/test
+    - pip install -r /home/ubuntu/test/requirements.txt
+    - export C_FORCE_ROOT="true"
+    - export LC_ALL=C
+    - cd /home/ubuntu/test; python run.py &
+    - cd /home/ubuntu/test; celery worker -A app.celery --concurrency=2 &
+    - cd /home/ubuntu/test; celery -A app.celery flower --port=5001
