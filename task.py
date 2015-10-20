@@ -14,7 +14,7 @@ def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
 def convert_msh(filename):
 	filename_xml = filename[:-3]
 	filename_xml += 'xml'
-	subprocess.call(['dolfin-convert', filename, filename_xml])
+	subprocess.call(['sudo', 'dolfin-convert', filename, filename_xml])
 
 @celery.task
 def start_airfoil(samples, viscocity, speed, time, filename):
