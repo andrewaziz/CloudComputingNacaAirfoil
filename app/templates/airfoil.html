@@ -5,23 +5,17 @@
 
 <h1>Airfoil</h1>
     <p>To run the code do./airfoil num_samples visc speed T mesh.xml</p>
-
     <form action="" method="post" name="airfoil">
         {{ form.csrf_token }}
         {{ form.hidden_tag() }}
-        <p>
-            <p>number of samples</p>
-            {{ form.samples(size=40) }}<br>
-            <p>viscocity</p>
-            {{ form.viscocity(size=40) }}<br>
-            <p>speed</p>
-            {{ form.speed(size=40) }}<br>
-            <p>total time</p>
-            {{ form.time(size=40) }}<br>
-            <p>file</p>
-            {{ form.filename(size=40) }}<br>
-            </p>
-            <p><input type="submit" value="run airfoil"></p>
+
+        {{ form.samples }}
+		{{ form.viscocity }}
+		{{ form.speed }}
+	    {{ form.time }}
+		{{ form.filename }}
+        <p><input type="submit" value="run gmsh"></p>
+
     </form>
 
   </body>

@@ -17,8 +17,12 @@ class GMSHForm(Form):
 #./airfoil num_samples visc speed T mesh.xml
 
 class AirfoilForm(Form):
-    samples = IntegerField('samples')
-    viscocity = IntegerField('viscocity')
-    speed = IntegerField('angles')
-    time = IntegerField('time')
-    filename = IntegerField('filename')
+    samples = StringField('samples')
+    viscocity = StringField('viscocity')
+    speed = StringField('angles')
+    time = StringField('time')
+    filename = StringField('filename')
+
+class TestForm(Form):
+    testtext = StringField('testtext')
+    inttest = IntegerField('inttest')

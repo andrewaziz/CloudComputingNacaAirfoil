@@ -4,7 +4,7 @@ import subprocess
 from celery import group, subtask
 from flask import render_template, make_response, redirect, request
 from app import app
-from .forms import LoginForm, GMSHForm, AirfoilForm
+from .forms import LoginForm, GMSHForm, AirfoilForm, TestForm
 from task import start_gmsh, convert_msh, start_airfoil
 
 @app.route('/')
@@ -38,12 +38,12 @@ def gmsh():
 def airfoil():
 	form = AirfoilForm()
 	if form.validate_on_submit():
-		samples = str(form.samples.data)
-		viscocity = str(form.viscocity.data)
-		speed = str(form.angles.data)
-		time = str(form.time.data)
-		filename = str(form.filename.data)
-
+		print 'fuckupp'
+		samples = form.samples.data
+		viscocity = form.viscocity.data
+		speed = form.angles.data
+		time = form.time.data
+		filename = form.filename.data
 		start_airfoil.delay(samples, viscocity, speed, time, filename)
 
 
