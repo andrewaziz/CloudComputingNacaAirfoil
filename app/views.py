@@ -41,7 +41,7 @@ def airfoil():
 		print 'fuckupp'
 		samples = form.samples.data
 		viscocity = form.viscocity.data
-		speed = form.angles.data
+		speed = form.speed.data
 		time = form.time.data
 		filename = form.filename.data
 		start_airfoil.delay(samples, viscocity, speed, time, filename)
