@@ -12,6 +12,8 @@ packages:
 runcmd:
     - mkdir /home/ubuntu/geo
     - mkdir /home/ubuntu/msh
+    - pip install flower
+    - pip install celery
     - git clone https://github.com/niklasaholm/test.git /home/ubuntu/test
     - pip install -r /home/ubuntu/test/requirements.txt
     - export C_FORCE_ROOT="true"
