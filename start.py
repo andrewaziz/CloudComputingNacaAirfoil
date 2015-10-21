@@ -18,7 +18,7 @@ name = argv[1]
 
 try:
     server = nc.servers.create(name=name, image=image.id, flavor=flavor.id,
-                               network=network.id, key_name='openstack-aaholm',
+                               network=network.id, key_name='AndrewKeyPair',
                                userdata=userdata, security_groups=None)
 finally:
     userdata.close()
