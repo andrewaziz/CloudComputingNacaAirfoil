@@ -19,9 +19,9 @@
 # Path to GMSH binary
 GMSHBIN="/usr/bin/gmsh"
 # Path to dir where geo files will be stored
-GEODIR="/home/andrew/CloudComputingNacaAirfoil/geo"
+GEODIR="/home/ubuntu/geo"
 # Path to dir where msh files will be stored
-MSHDIR="/home/andrew/CloudComputingNacaAirfoil/msh"
+MSHDIR="/home/ubuntu/msh"
 # NACA four digit airfoil (typically NACA0012)
 NACA1=0
 NACA2=0
