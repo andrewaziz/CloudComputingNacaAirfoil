@@ -4,14 +4,40 @@ import subprocess
 from celery import group, subtask
 from flask import render_template, make_response, redirect, request
 from app import app
-from .forms import LoginForm, GMSHForm, AirfoilForm, TestForm
+from .forms import LoginForm, GMSHForm, GMSHAirfoilForm, AirfoilForm, TestForm
 from task import start_gmsh, convert_msh, start_airfoil
+
+
 
 @app.route('/')
 @app.route('/index')
 def index():
 	user = {'nickname': 'Bob'}
 	return render_template('index.html', title='Home', user=user)
+
+
+@app.route('/gmshairfoil', methods=['GET', 'POST'])
+def test():
+    form = GMSHAirfoilForm()
+    if form.validate_on_submit():
+        angle_start = int(form.angle_start.data)
+        angle_stop = int(form.angle_stop.data)
+        angles = int(form.angles.data)
+        nodes = form.nodes.data
+        levels = form.levels.data
+
+        samples = form.samples.data
+        viscocity = form.viscocity.data
+        speed = form.angles.data
+        time = form.time.data
+        filename = form.filename.data
+        test = 5 - 3
+        step = ((angle_stop - angle_start) / angles)
+        angle_list = [angle_start + step*x for x in range(n+1)]
+        res = group([start_gmsh.s(x, x) for x in angle_list])()
+
+    return render_template('gmshairfoil.html', form=form)
+
 
 @app.route('/gmsh', methods=['GET', 'POST'])
 def gmsh():
@@ -23,8 +49,12 @@ def gmsh():
 		nodes = str(form.nodes.data)
 		levels = str(form.levels.data)
 
+		#angle_list = distributeJob(angle_start, angle_stop, angles)
+		#res = group([start_gmsh.s(a, a, 1, nodes, levels) for a in angle_list])
+
 		res = start_gmsh.delay(angle_start, angle_stop, angles, nodes, levels)
 		res.get()
+
 
 		files = glob.glob('/home/ubuntu/msh/*.msh')
 		convert_group = group([convert_msh.s(msh) for msh in files])

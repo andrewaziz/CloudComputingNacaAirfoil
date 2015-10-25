@@ -7,10 +7,18 @@ from app import celery
 # celery -A app.celery worker
 
 @celery.task
+def gmsh_convert_airfoil():
+    subprocess.call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
+    subprocess.call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
+    subprocess.call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
+
+
+@celery.task
 def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
     subprocess.call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
+
 
 @celery.task
 def convert_msh(filename):
