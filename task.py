@@ -7,7 +7,7 @@ from app import celery
 # celery -A app.celery worker
 
 @celery.task
-def gmsh_convert_airfoil():
+def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels):
     subprocess.call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)

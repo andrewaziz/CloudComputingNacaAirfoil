@@ -33,7 +33,7 @@ def test():
         filename = form.filename.data
         step = ((angle_stop - angle_start) / angles)
         angle_list = [angle_start + step*x for x in range(angles+1)]
-        res = group([start_gmsh.s(str(x), str(x), str(angles), nodes, levels) for x in angle_list])()
+        res = group([gmsh_convert_airfoil.s(str(x), str(x), str(angles), nodes, levels) for x in angle_list])()
 
     return render_template('gmshairfoil.html', form=form)
 
