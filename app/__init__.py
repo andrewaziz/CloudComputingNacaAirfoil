@@ -1,3 +1,5 @@
+import os
+import swiftclient.client
 from celery import Celery
 from flask import Flask
 
@@ -8,6 +10,13 @@ app.config['CELERY_RESULT_BACKEND'] = 'amqp'
 app.config['WTF_CSRF_ENABLED'] = True
 app.config['SECRET_KEY'] = 'you-will-never-guess'
 
+
+conf = {'user':os.environ['OS_USERNAME'],
+        'key':os.environ['OS_PASSWORD'],
+        'tenant_name':os.environ['OS_TENANT_NAME'],
+        'authurl':os.environ['OS_AUTH_URL']}
+
+conn = swiftclient.client.Connection(auth_version=2, **conf)
 
 
 celery = Celery(app.name, backend=app.config['CELERY_RESULT_BACKEND'],

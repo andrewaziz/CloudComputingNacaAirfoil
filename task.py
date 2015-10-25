@@ -3,7 +3,7 @@ import subprocess
 
 from celery import Celery
 from app import celery
-
+from app import conn
 # celery -A app.celery worker
 
 @celery.task
@@ -13,11 +13,14 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels):
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
 
     for level in range(int(levels) + 1):
+        path = '/home/ubuntu/msh/'
         filename = '/home/ubuntu/msh/r{}a{}n{}.msh'.format(level, angle_start, nodes)
         filename_xml = filename[:-3]
         filename_xml += 'xml'
-        subprocess.call('sudo dolfin-convert {} {}'.format(filename, filename_xml), shell=True)
+        subprocess.check_call('sudo dolfin-convert {} {}'.format(filename, filename_xml), shell=True)
 
+    with open(filename_xml) as f:
+        conn.put_object(filename_xml[len(path):], contents=f.read(), content_type='text/plain')
 
 @celery.task
 def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
