@@ -27,7 +27,7 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels):
     subprocess.check_call('sudo {} {} {} {} {} {}'.format(airfoil_path,
                                                     samples, viscocity,
                                                     speed, time,
-                                                    filename, shell=True))
+                                                    filename), shell=True)
 
     filename = '{}/drag_lift.m'.format(filename_xml[len(path):])
     with open('/results/drag_lift.m') as f:
