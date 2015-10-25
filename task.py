@@ -12,6 +12,13 @@ def gmsh_convert_airfoil():
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
 
+    for level in range(levels + 1):
+        filename = 'r{}a{}n{}.msh'.format(level, angle_start, nodes)
+        filename_xml = filename[:-3]
+        filename_xml += 'xml'
+        subprocess.call(['sudo', 'dolfin-convert', filename, filename_xml])
+
+
 
 @celery.task
 def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
