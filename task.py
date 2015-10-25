@@ -20,7 +20,20 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels):
         subprocess.check_call('sudo dolfin-convert {} {}'.format(filename, filename_xml), shell=True)
 
     with open(filename_xml) as f:
-        conn.put_object(filename_xml[len(path):], contents=f.read(), content_type='text/plain')
+        conn.put_object('g17container', filename_xml[len(path):],
+                        contents=f.read(), content_type='text/plain')
+
+    airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
+    subprocess.check_call('sudo {} {} {} {} {} {}'.format(airfoil_path,
+                                                    samples, viscocity,
+                                                    speed, time,
+                                                    filename, shell=True))
+
+    filename = '{}/drag_lift.m'.format(filename_xml[len(path):])
+    with open('/results/drag_lift.m') as f:
+        conn.put_object('g17container', filename, contents=f.read(), content_type='text/plain')
+
+
 
 @celery.task
 def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
