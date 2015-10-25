@@ -34,7 +34,7 @@ def test():
         test = 5 - 3
         step = ((angle_stop - angle_start) / angles)
         angle_list = [angle_start + step*x for x in range(n+1)]
-        res = group([start_gmsh.s(x, x) for x in angle_list])()
+        res = group([start_gmsh.s(x, x, angles, nodes, levels) for x in angle_list])()
 
     return render_template('gmshairfoil.html', form=form)
 
