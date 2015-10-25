@@ -5,7 +5,7 @@ from celery import group, subtask
 from flask import render_template, make_response, redirect, request
 from app import app
 from .forms import LoginForm, GMSHForm, GMSHAirfoilForm, AirfoilForm, TestForm
-from task import start_gmsh, convert_msh, start_airfoil
+from task import start_gmsh, convert_msh, start_airfoil, gmsh_convert_airfoil
 
 
 
@@ -31,7 +31,6 @@ def test():
         speed = form.angles.data
         time = form.time.data
         filename = form.filename.data
-        test = 5 - 3
         step = ((angle_stop - angle_start) / angles)
         angle_list = [angle_start + step*x for x in range(angles+1)]
         res = group([start_gmsh.s(str(x), str(x), str(angles), nodes, levels) for x in angle_list])()
