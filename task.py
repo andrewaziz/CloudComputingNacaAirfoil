@@ -7,7 +7,7 @@ from app import conn
 # celery -A app.celery worker
 
 @celery.task
-def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels):
+def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, viscocity, speed, time):
     subprocess.call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
@@ -25,7 +25,7 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels):
 
         airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
         subprocess.check_call('sudo {} {} {} {} {} {}'.format(airfoil_path,
-                    samples, viscocity, speed, time, filename), shell=True)
+                    samples, viscocity, speed, time, filename_xml), shell=True)
 
 
         filename = '{}/drag_lift.m'.format(filename_xml[len(path):])

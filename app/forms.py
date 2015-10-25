@@ -27,7 +27,6 @@ class GMSHAirfoilForm(Form):
     viscocity = StringField('viscocity')
     speed = StringField('angles')
     time = StringField('time')
-    filename = StringField('filename')
 
 
 class AirfoilForm(Form):
