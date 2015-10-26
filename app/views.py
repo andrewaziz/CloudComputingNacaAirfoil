@@ -76,7 +76,7 @@ def airfoil():
 		speed = form.speed.data
 		time_step = form.time_step.data
 		filename = form.filename.data
-		start_airfoil.delay(samples, viscocity, speed, time, filename)
+		start_airfoil.delay(samples, viscocity, speed, time_step, filename)
 
 
 		return redirect('/index')
