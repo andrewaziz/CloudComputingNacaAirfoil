@@ -1,40 +1,32 @@
-import os
-from sys import argv
-import time
-from novaclient.client import Client
+from worker import start_instance
 
-config = {'username':os.environ['OS_USERNAME'],
-          'api_key':os.environ['OS_PASSWORD'],
-          'project_id':os.environ['OS_TENANT_NAME'],
-          'auth_url':os.environ['OS_AUTH_URL']}
 
-nc = Client('2',**config)
-ubuntu = 'Ubuntu Server 14.04 LTS (Trusty Tahr)'
-image = nc.images.find(name='g17-airfoil')
-flavor = nc.flavors.find(name='m1.medium')
-network = nc.networks.find(label='ACC-Course-net')
-userdata = open('userdata-project.yml', 'r')
-name = argv[1]
+number_of_workers = raw_input('number of workers: ')
+number_of_workers = int(number_of_workers)
 
-try:
-    server = nc.servers.create(name=name, image=image.id, flavor=flavor.id,
-                               network=network.id, key_name='g17key',
-                               userdata=userdata, security_groups=None)
-finally:
-    userdata.close()
 
-floating_ips = nc.floating_ips.list()
-state = server.status
+def substitute(new, old, file):
+	f = open(file, "r")
+	lines = f.readlines()
+	f.close()
 
-while(state == 'BUILD'):
-    time.sleep(4)
-    server = nc.servers.get(server.id)
-    state = server.status
+	f = open(file, "w")
+	for line in lines:
+		if not old in line:
+			f.write(line)
+		else:
+			f.write(new + '\n')
+	f.close()
 
-for ip in floating_ips:
-    if ip.instance_id == None:
-        server.add_floating_ip(ip)
-        print 'Ubuntu Server running at: {}'.format(ip.ip)
-        break
-else:
-    print 'No available floating IPs in the pool'
+controller_ip = start_instance('g17control', 'userdata-project.yml', True)
+
+
+substitute('    - export controller_ip="{}"'.format(controller_ip),
+		   '    - export controller_ip', 'userdata-worker.yml')
+
+for x in xrange(1, number_of_workers + 1):
+	substitute('    - export worker_id="worker{}"'.format(x),
+		   	   '    - export worker_id', 'userdata-worker.yml')
+
+
+	start_instance('g17worker{}'.format(x), 'userdata-worker.yml', True)
