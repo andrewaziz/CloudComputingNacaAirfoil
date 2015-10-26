@@ -25,16 +25,15 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples
 
         airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
 
-        #time.sleep(10)
 	try:
-		print filename_xml
-		check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil', samples, viscocity, speed, time_step, filename_xml])	
-		#check_call('sudo {} {} {} {} {} {}'.format(airfoil_path, samples, viscocity, speed, time_step, filename_xml), shell=True)
+		check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
+                    samples, viscocity, speed, time_step, filename_xml])
 
 	except CalledProcessError as e:
 		print e
 
-	filename = '{}/drag_lift.m'.format(filename_xml[len(path):])
+	filename = 's{}v{}s{}t{}/{}/drag_lift.m'.format(samples, viscocity,
+                                    speed, time_step, filename_xml[len(path):])
 
 	with open('/home/ubuntu/test/results/drag_ligt.m') as f:
             conn.put_object('g17container', filename,
