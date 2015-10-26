@@ -26,14 +26,14 @@ class GMSHAirfoilForm(Form):
     samples = StringField('samples')
     viscocity = StringField('viscocity')
     speed = StringField('angles')
-    time = StringField('time')
+    time_step = StringField('time_step')
 
 
 class AirfoilForm(Form):
     samples = StringField('samples')
     viscocity = StringField('viscocity')
     speed = StringField('angles')
-    time = StringField('time')
+    time_step = StringField('time_step')
     filename = StringField('filename')
 
 class TestForm(Form):

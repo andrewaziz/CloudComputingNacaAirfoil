@@ -4,10 +4,11 @@ import subprocess
 from celery import Celery
 from app import celery
 from app import conn
+import time
 # celery -A app.celery worker
 
 @celery.task
-def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, viscocity, speed, time):
+def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, sample, viscocity, speed, time_step):
     subprocess.call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
@@ -24,9 +25,10 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, viscoci
                             contents=f.read(), content_type='text/plain')
 
         airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
-        subprocess.check_call('sudo {} {} {} {} {} {}'.format(airfoil_path,
-                    samples, viscocity, speed, time, filename_xml), shell=True)
+        subprocess.call('sudo {} {} {} {} {} {}'.format(airfoil_path,
+                    samples, viscocity, speed, time_step, filename_xml), shell=True)
 
+        time.sleep(10)
 
         filename = '{}/drag_lift.m'.format(filename_xml[len(path):])
         with open('/results/drag_lift.m') as f:
@@ -49,7 +51,7 @@ def convert_msh(filename):
 	subprocess.call(['sudo', 'dolfin-convert', filename, filename_xml])
 
 @celery.task
-def start_airfoil(samples, viscocity, speed, time, filename):
+def start_airfoil(samples, viscocity, speed, time_step, filename):
 	filename = '/home/ubuntu/msh/{}'.format(filename)
 	subprocess.call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
-					 samples, viscocity, speed, time, filename])
+					 samples, viscocity, speed, time_step, filename])
