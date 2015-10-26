@@ -19,9 +19,14 @@ conf = {'user':os.environ['OS_USERNAME'],
 conn = swiftclient.client.Connection(auth_version=2, **conf)
 
 
+celery = Celery('task', backend='amqp',
+                broker='amqp://{}:password@{}:5672/host'.format
+                (os.environ['worker_id'], os.environ['controller_ip']))
+
+'''
 celery = Celery(app.name, backend=app.config['CELERY_RESULT_BACKEND'],
                 broker=app.config['CELERY_BROKER_URL'])
-
+'''
 celery.conf.update(app.config)
 
 
