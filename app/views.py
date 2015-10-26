@@ -6,7 +6,7 @@ from flask import render_template, make_response, redirect, request
 from app import app
 from .forms import LoginForm, GMSHForm, GMSHAirfoilForm, AirfoilForm, TestForm
 from task import start_gmsh, convert_msh, start_airfoil, gmsh_convert_airfoil
-
+import urllib2
 
 
 @app.route('/')
@@ -85,7 +85,6 @@ def airfoil():
 	return render_template('airfoil.html', form=form)
 
 
-
 @app.route('/convert', methods=['POST'])
 def convert():
 	if not request.json or 'convert' not in request.json:
@@ -104,17 +103,22 @@ def convert():
 
 	return redirect('/index')
 
+@app.route('/api/v1.0/<xml>', methods=['GET'])
+def get_xml_file(xml):
+	url = 'http://smog.uppmax.uu.se:8080/swift/v1/g17container/{}'.format(xml)
+	data = urllib2.urlopen(url)
 
+	response = make_response(data.read())
+	response.headers["Content-Disposition"] = "attachment; filename={}".format(xml)
 
+	return response
 
-### SERVE FILE EXAMPLE
-@app.route("/api/air", methods=["GET"])
-def get_air():
+@app.route('/api/v1.0/<xml>/<settings>/<f>', methods=['GET'])
+def get_draglift(xml, settings, f):
+	url = 'http://smog.uppmax.uu.se:8080/swift/v1/g17container/{}/{}/{}'.format(xml, settings, f)
+	data = urllib2.urlopen(url)
 
-    with open("/Users/niklas/GitHub/test/geo/geo.txt", "r+") as f:
-        data = f.read()
+	response = make_response(data.read())
+	response.headers["Content-Disposition"] = "attachment; filename={}".format(f)
 
-    response = make_response(data)
-
-    response.headers["Content-Disposition"] = "attachment; filename=data.txt"
-    return response
+	return response
