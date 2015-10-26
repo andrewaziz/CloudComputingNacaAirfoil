@@ -8,7 +8,11 @@ import time
 # celery -A app.celery worker
 
 @celery.task
+<<<<<<< HEAD
 def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, sample, viscocity, speed, time_step):
+=======
+def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time):
+>>>>>>> 288225c83841e48adb000b0d70bc2490cedcbafb
     subprocess.call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     subprocess.call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
@@ -25,6 +29,7 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, sample,
                             contents=f.read(), content_type='text/plain')
 
         airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
+<<<<<<< HEAD
         subprocess.call('sudo {} {} {} {} {} {}'.format(airfoil_path,
                     samples, viscocity, speed, time_step, filename_xml), shell=True)
 
@@ -32,6 +37,14 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, sample,
 
         filename = '{}/drag_lift.m'.format(filename_xml[len(path):])
         with open('/results/drag_lift.m') as f:
+=======
+		        
+	subprocess.call('sudo {} {} {} {} {} {}'.format(airfoil_path, samples, viscocity, speed, time, filename_xml), shell=True)
+	time.sleep(10)
+	
+	filename = '{}/drag_lift.m'.format(filename_xml[len(path):])
+        with open('/ubuntu/home/test/results/drag_ligt.m') as f:
+>>>>>>> 288225c83841e48adb000b0d70bc2490cedcbafb
             conn.put_object('g17container', filename,
                             contents=f.read(), content_type='text/plain')
 
