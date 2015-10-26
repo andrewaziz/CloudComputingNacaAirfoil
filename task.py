@@ -4,7 +4,6 @@ from celery import Celery
 from app import celery
 from app import conn
 import time
-# celery -A app.celery worker
 
 @celery.task
 def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time_step):
@@ -32,8 +31,8 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples
 	except CalledProcessError as e:
 		print e
 
-	filename = 's{}v{}s{}t{}/{}/drag_lift.m'.format(samples, viscocity,
-                                    speed, time_step, filename_xml[len(path):])
+	filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):],
+                                        samples, viscocity, speed, time_step)
 
 	with open('/home/ubuntu/test/results/drag_ligt.m') as f:
             conn.put_object('g17container', filename,
