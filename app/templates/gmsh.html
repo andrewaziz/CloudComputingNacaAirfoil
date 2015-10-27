@@ -7,31 +7,33 @@
 	<li><a href=".">Home</a></li>
 	<li><a href="/gmsh">Gmsh</a></li>
 	<li><a href="/airfoil">Airfoil</a></li>
+    <li><a href="/gmshairfoil">GMSH and Airfoil</a></li>
+
 	<li>
 	  <script>
 	    document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':8080' + window.location.pathname + '" >Link to same page on port 8080:</a> ');
 	  </script>
 	</li>
-      </ul> 
+      </ul>
     </div>
-    
+
 
 <h1>GMSH</h1>
-    <p># ./runme.sh 0 30 10 200 3</p>
     <form action="" method="post" name="gmsh">
-        {{ form.csrf_token }} 
+        {{ form.csrf_token }}
         {{ form.hidden_tag() }}
         <p>
-            <p>angle start : smallest anglemof attack (degrees)</p>
-            {{ form.angle_start(size=40) }}<br>
-            <p>angle stop  : biggest angle of attack (degrees)</p>
-            {{ form.angle_stop(size=40) }}<br>
-            <p>n angles    : split angle_stop-angle_start into n_angles parts</p>
-            {{ form.angles(size=40) }}<br>
-            <p>n nodes     : number of nodes on one side of airfoil</p>
-            {{ form.nodes(size=40) }}<br>
-            <p>n levels    : number of refinement steps in meshing 0=no refinement 1=one time 2=two times etc...</p>
-            {{ form.levels(size=40) }}<br>
+            <p>start angle </p>
+            {{ form.angle_start(size=20, value=0) }}<br>
+            <p>stop angle </p>
+            {{ form.angle_stop(size=20, value=30) }}<br>
+            <p>step between angles</p>
+            {{ form.angles(size=20, value=10) }}<br>
+            <p>number of nodes</p>
+            {{ form.nodes(size=20, value=100) }}<br>
+            <p>refinements step</p>
+            {{ form.levels(size=20, value=0) }}<br>
+<br>
             </p>
             <p><input type="submit" value="run gmsh"></p>
     </form>
