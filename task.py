@@ -67,7 +67,6 @@ def convert_msh(filename):
 def start_airfoil(samples, viscocity, speed, time_step, filename):
     filename = '/home/ubuntu/msh/{}'.format(filename)
     #call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil', samples, viscocity, speed, time_step, filename])
-
     airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
 
     try:
@@ -77,7 +76,7 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
     except CalledProcessError as e:
         print e
 
-    filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):],
+    filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename,
                                         samples, viscocity, speed, time_step)
 
     with open('/home/ubuntu/test/results/drag_ligt.m') as f:
