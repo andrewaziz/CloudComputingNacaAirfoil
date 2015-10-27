@@ -4,6 +4,7 @@ from celery import Celery
 from app import celery
 from app import conn
 import time
+import os.path
 
 @celery.task
 def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time_step):
@@ -65,20 +66,24 @@ def convert_msh(filename):
 
 @celery.task
 def start_airfoil(samples, viscocity, speed, time_step, filename):
-    filename = '/home/ubuntu/msh/{}'.format(filename)
-    #call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil', samples, viscocity, speed, time_step, filename])
+    filename_path = '/home/ubuntu/msh/{}'.format(filename)
+
+    if not os.path.isfile(filename_path):
+        conn.get_object('g17container', filename)
+        filename_path = filename
+
     airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
 
     try:
         check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
-                    samples, viscocity, speed, time_step, filename])
+                    samples, viscocity, speed, time_step, filename_path])
 
     except CalledProcessError as e:
         print e
 
-    filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename,
+    filename_path = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_path,
                                         samples, viscocity, speed, time_step)
 
     with open('/home/ubuntu/test/results/drag_ligt.m') as f:
-        conn.put_object('g17container', filename,
+        conn.put_object('g17container', filename_path,
                         contents=f.read(), content_type='text/plain')
