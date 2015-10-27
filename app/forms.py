@@ -16,11 +16,24 @@ class GMSHForm(Form):
 #To run the code do "nr of samples", viscocity speed time file
 #./airfoil num_samples visc speed T mesh.xml
 
+class GMSHAirfoilForm(Form):
+    angle_start = StringField('angle_start')
+    angle_stop = StringField('angle_stop')
+    angles = StringField('angles')
+    nodes = StringField('nodes')
+    levels = StringField('levels')
+
+    samples = StringField('samples')
+    viscocity = StringField('viscocity')
+    speed = StringField('angles')
+    time_step = StringField('time_step')
+
+
 class AirfoilForm(Form):
     samples = StringField('samples')
     viscocity = StringField('viscocity')
     speed = StringField('angles')
-    time = StringField('time')
+    time_step = StringField('time_step')
     filename = StringField('filename')
 
 class TestForm(Form):

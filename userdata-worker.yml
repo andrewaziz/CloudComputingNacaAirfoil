@@ -1,0 +1,32 @@
+#Cloud-config
+
+package_update: true
+package_upgrade: true
+
+packages:
+    - git
+    - python-pip
+    - rabbitmq-server
+    - python-swiftclient
+
+runcmd:
+    - mkdir /home/ubuntu/geo
+    - mkdir /home/ubuntu/msh
+    - chown -R ubuntu /home/ubuntu/geo
+    - chown -R ubuntu /home/ubuntu/msh
+    - chmod 777 /home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil
+
+    - export worker_id="worker2"
+    - export controller_ip="130.238.29.161"
+
+    - export OS_AUTH_URL=http://smog.uppmax.uu.se:5000/v2.0
+    - export OS_TENANT_NAME="ACC-Course"
+    - export OS_USERNAME="user"
+    - export OS_PASSWORD="password"
+
+
+    - git clone -b parallel https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
+    - pip install -r /home/ubuntu/test/requirements.txt
+    - export C_FORCE_ROOT="true"
+    - export LC_ALL="en_US.utf-8"
+    - cd /home/ubuntu/test; celery worker -A app.celery --concurrency=1 &

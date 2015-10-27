@@ -7,25 +7,40 @@
 	<li><a href=".">Home</a></li>
 	<li><a href="/gmsh">Gmsh</a></li>
 	<li><a href="/airfoil">Airfoil</a></li>
-	<li>
+    <li><a href="/gmshairfoil">GMSH and Airfoil</a></li>
+
+    <li>
 	  <script>
 	    document.write('<a href="' + window.location.protocol + '//' + window.location.hostname + ':5001' + '" >Flower</a> ');
 	  </script>
 	</li>
-      </ul> 
+      </ul>
     </div>
-    
+
 <h1>Airfoil</h1>
-    <p>To run the code do./airfoil num_samples visc speed T mesh.xml</p>
     <form action="" method="post" name="airfoil">
         {{ form.csrf_token }}
         {{ form.hidden_tag() }}
 
-        {{ form.samples }}
-		{{ form.viscocity }}
-		{{ form.speed }}
-	    {{ form.time }}
-		{{ form.filename }}
+
+        <p>number of samples</p>
+        {{ form.samples(size=20, value=10)}}
+        <p> viscocity </p>
+        {{ form.viscocity(size=20, value=0.0001) }}
+        <p> speed </p>
+        {{ form.speed(size=20, value='10.') }}
+        <p> time </p>
+        {{ form.time_step(size=20, value=1) }}
+        <p> filename </p>
+
+        {{ form.filename(size=20, value='r0a0n0.xml') }}
+
+
+
+
+
+
+
         <p><input type="submit" value="run airfoil"></p>
 
     </form>

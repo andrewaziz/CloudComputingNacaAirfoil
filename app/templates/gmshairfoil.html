@@ -16,13 +16,12 @@
 	</li>
       </ul>
     </div>
-
-
-<h1>GMSH</h1>
-    <form action="" method="post" name="gmsh">
+    <h1>GMSH</h1>
+    <form action="" method="post" name="gmshairfoil">
         {{ form.csrf_token }}
         {{ form.hidden_tag() }}
         <p>
+
             <p>start angle </p>
             {{ form.angle_start(size=20, value=0) }}<br>
             <p>stop angle </p>
@@ -33,9 +32,20 @@
             {{ form.nodes(size=20, value=100) }}<br>
             <p>refinements step</p>
             {{ form.levels(size=20, value=0) }}<br>
-<br>
-            </p>
-            <p><input type="submit" value="run gmsh"></p>
+
+            <h1>Airfoil</h1>
+
+            <p>number of samples</p>
+            {{ form.samples(size=20, value=10)}}
+            <p> viscocity </p>
+		    {{ form.viscocity(size=20, value=0.0001) }}
+            <p> speed </p>
+		    {{ form.speed(size=20, value='10.') }}
+            <p> time </p>
+            {{ form.time_step(size=20, value=1) }}
+
+        <p><input type="submit" value="run airfoil"></p>
+
     </form>
 
   </body>
