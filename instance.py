@@ -42,6 +42,18 @@ def start_instance(name, userdata, floating_ip):
 		else:
 			print 'No available floating IPs in the pool'
 
+def substitute(new, old, file):
+	f = open(file, "r")
+	lines = f.readlines()
+	f.close()
+
+	f = open(file, "w")
+	for line in lines:
+		if not old in line:
+			f.write(line)
+		else:
+			f.write(new + '\n')
+	f.close()
 
 
 

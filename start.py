@@ -1,22 +1,10 @@
-from worker import start_instance
+from instance import start_instance, substitute
 
 
 number_of_workers = raw_input('number of workers: ')
 number_of_workers = int(number_of_workers)
 
 
-def substitute(new, old, file):
-	f = open(file, "r")
-	lines = f.readlines()
-	f.close()
-
-	f = open(file, "w")
-	for line in lines:
-		if not old in line:
-			f.write(line)
-		else:
-			f.write(new + '\n')
-	f.close()
 
 controller_ip = start_instance('g17control', 'userdata-project.yml', True)
 
