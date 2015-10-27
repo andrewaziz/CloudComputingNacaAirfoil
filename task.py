@@ -68,9 +68,11 @@ def convert_msh(filename):
 def start_airfoil(samples, viscocity, speed, time_step, filename):
     filename_path = '/home/ubuntu/msh/{}'.format(filename)
 
-    if not os.path.isfile(filename_path):
-        conn.get_object('g17container', filename)
+    if not os.path.exists(filename_path):
+        response, data = conn.get_object('g17container', filename)
         filename_path = filename
+        with open(filename, 'w') as f:
+            f.write(data)
 
     airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
 
@@ -81,9 +83,9 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
     except CalledProcessError as e:
         print e
 
-    filename_path = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_path,
+    object_name = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename,
                                         samples, viscocity, speed, time_step)
 
     with open('/home/ubuntu/test/results/drag_ligt.m') as f:
-        conn.put_object('g17container', filename_path,
+        conn.put_object('g17container', object_name,
                         contents=f.read(), content_type='text/plain')
