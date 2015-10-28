@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from subprocess import call, check_call, CalledProcessError
 from celery import Celery
-from app import celery, conn, get_dir
+from app import celery, conn, git_dir
 import time
 import os
 import os.path
@@ -10,7 +10,7 @@ import uuid
 
 @celery.task
 def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time_step):
-    os.chdir(get_dir)
+    os.chdir(git_dir)
     call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
@@ -26,30 +26,33 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples
             conn.put_object('g17container', filename_xml[len(path):],
                             contents=f.read(), content_type='text/plain')
 
-        airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
+    airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
+    for level in range(int(levels) + 1):
+        u = str(uuid.uuid4())
+        root_dir = '/home/ubuntu/'
+        result_dir = '{}/r{}a{}n{}/{}'.format(root_dir, level, angle_start, nodes, u)
 
-    u = str(uuid.uuid4())
-    root_dir = '/home/ubuntu/'
-    result_dir = '{}/r{}a{}n{}/{}'.format(root_dir, levels, angle_start, nodes, u)
+        filename_xml = '/home/ubuntu/msh/r{}a{}n{}.xml'.format(level, angle_start, nodes)
 
-    if not os.path.exists(result_dir):
-        os.makedirs(result_dir)
 
-    os.chdir(result_dir)
+        if not os.path.exists(result_dir):
+            os.makedirs(result_dir)
 
-    try:
-	check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
-         	    samples, viscocity, speed, time_step, filename_xml])
+        os.chdir(result_dir)
 
-    except CalledProcessError as e:
-	print e
+        try:
+            check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
+         	            samples, viscocity, speed, time_step, filename_xml])
 
-    filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):], samples, viscocity, speed, time_step)
+        except CalledProcessError as e:
+            print e
 
-    result_file = '{}/results/drag_ligt.m'.format(result_dir)
-    with open(result_file) as f:
-              conn.put_object('g17container', filename,
-                              contents=f.read(), content_type='text/plain')
+        filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):], samples, viscocity, speed, time_step)
+
+        result_file = '{}/results/drag_ligt.m'.format(result_dir)
+        with open(result_file) as f:
+            conn.put_object('g17container', filename,
+                            contents=f.read(), content_type='text/plain')
 
 
 
