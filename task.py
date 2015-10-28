@@ -11,6 +11,8 @@ import uuid
 
 @celery.task
 def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time_step):
+    ### ugly row below should fix
+    os.chdir('/home/ubuntu/test')
     call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
@@ -30,7 +32,7 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples
 
     u = str(uuid.uuid4())
     root_dir = '/home/ubuntu/'
-    result_dir = '{}//r{}a{}n{}/{}'.format(root_dir, levels, angle_start, nodes, u)
+    result_dir = '{}/r{}a{}n{}/{}'.format(root_dir, levels, angle_start, nodes, u)
 
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
