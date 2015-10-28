@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from subprocess import call, check_call, CalledProcessError
 from celery import Celery
-from app import celery, conn, get_dir
+from app import celery, conn, git_dir
 import time
 import os
 import os.path
