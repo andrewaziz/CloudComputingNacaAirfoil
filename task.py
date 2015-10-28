@@ -101,6 +101,7 @@ def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
     Returns:
         None
     '''
+    os.chdir(git_dir)
     try:
         call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     except CalledProcessError as e:
@@ -138,14 +139,20 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
         None
 
     '''
+    call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
+    call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)    
+    os.chdir(git_dir)
     filename_path = '/home/ubuntu/msh/{}'.format(filename)
 
     if not os.path.exists(filename_path):
-        response, data = conn.get_object('g17container', filename)
+        os.chdir('/home/ubuntu/msh')
+	response, data = conn.get_object('g17container', filename)
         filename_path = filename
+    	call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
+    	call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
         with open(filename, 'w') as f:
             f.write(data)
-
+	os.chdir(git_dir)
     airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
 
     try:
