@@ -6,6 +6,8 @@ from app import conn
 import time
 import os
 import os.path
+import uuid
+
 
 @celery.task
 def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time_step):
@@ -26,28 +28,28 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples
 
         airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
 
-    root_dir = os.getcwd()
-    result_dir = '{}/r{}a{}n{}'.format(root_dir, levels, angle_start, nodes)
+    u = str(uuid.uuid4())
+    root_dir = '/home/ubuntu/'
+    result_dir = '{}//r{}a{}n{}/{}'.format(root_dir, levels, angle_start, nodes, u)
 
     if not os.path.exists(result_dir):
         os.makedirs(result_dir)
 
     os.chdir(result_dir)
+	
+    try:
+	check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
+         	    samples, viscocity, speed, time_step, filename_xml])
 
-	try:
-		check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
-                    samples, viscocity, speed, time_step, filename_xml])
+    except CalledProcessError as e:
+	print e
 
-	except CalledProcessError as e:
-		print e
-
-	filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):],
-                                        samples, viscocity, speed, time_step)
+    filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):], samples, viscocity, speed, time_step)
 
     result_file = '{}/results/drag_ligt.m'.format(result_dir)
-	with open(result_file) as f:
-            conn.put_object('g17container', filename,
-                            contents=f.read(), content_type='text/plain')
+    with open(result_file) as f:
+              conn.put_object('g17container', filename,
+                              contents=f.read(), content_type='text/plain')
 
 
 
@@ -83,7 +85,7 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
 
     try:
         check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
-                    samples, viscocity, speed, time_step, filename_path])
+         	    samples, viscocity, speed, time_step, filename_path])
 
     except CalledProcessError as e:
         print e

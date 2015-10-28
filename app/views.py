@@ -5,7 +5,7 @@ from celery import group, subtask
 from flask import render_template, make_response, redirect, request
 from app import app
 from .forms import LoginForm, GMSHForm, GMSHAirfoilForm, AirfoilForm, TestForm
-from task import start_gmsh, convert_msh, start_airfoil, gmsh_convert_airfoil
+from task import start_gmsh, start_airfoil, gmsh_convert_airfoil
 import urllib2
 
 
