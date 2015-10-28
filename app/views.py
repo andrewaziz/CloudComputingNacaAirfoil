@@ -7,12 +7,20 @@ from app import app
 from .forms import LoginForm, GMSHForm, GMSHAirfoilForm, AirfoilForm, TestForm
 from task import start_gmsh, convert_msh, start_airfoil, gmsh_convert_airfoil
 import urllib2
+from flask import send_file
 
 
 @app.route('/')
 @app.route('/index')
 def index():
 	return render_template('index.html')
+
+
+@app.route('/plot')
+def get_image():
+    #filename = 'plot_lift.png'
+    filename = 'plot_drag.png'
+    return send_file(filename, mimetype='image/png')
 
 
 @app.route('/gmshairfoil', methods=['GET', 'POST'])

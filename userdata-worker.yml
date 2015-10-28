@@ -16,13 +16,13 @@ runcmd:
     - chown -R ubuntu /home/ubuntu/msh
     - chmod 777 /home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil
 
-    - export worker_id="worker2"
-    - export controller_ip="130.238.29.161"
+    - export worker_id="worker1"
+    - export controller_ip="130.238.29.200"
 
     - export OS_AUTH_URL=http://smog.uppmax.uu.se:5000/v2.0
     - export OS_TENANT_NAME="ACC-Course"
-    - export OS_USERNAME="user"
-    - export OS_PASSWORD="password"
+    - export OS_USERNAME="adha2015"
+    - export OS_PASSWORD="x1xv6565"
 
 
     - git clone -b parallel https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
