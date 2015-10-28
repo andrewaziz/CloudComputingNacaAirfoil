@@ -1,8 +1,7 @@
 # -*- coding: utf-8 -*-
 from subprocess import call, check_call, CalledProcessError
 from celery import Celery
-from app import celery
-from app import conn
+from app import celery, conn, get_dir
 import time
 import os
 import os.path
@@ -11,8 +10,7 @@ import uuid
 
 @celery.task
 def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time_step):
-    ### ugly row below should fix
-    os.chdir('/home/ubuntu/test')
+    os.chdir(get_dir)
     call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
@@ -38,7 +36,7 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples
         os.makedirs(result_dir)
 
     os.chdir(result_dir)
-	
+
     try:
 	check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
          	    samples, viscocity, speed, time_step, filename_xml])
