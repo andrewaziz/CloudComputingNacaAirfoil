@@ -9,7 +9,30 @@ import uuid
 
 
 @celery.task
-def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time_step):
+def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
+                         samples, viscocity, speed, time_step):
+    ''' gmsh_convert_airfoil run gmsh with arguments then converts the .msh
+        files created by gmsh to .xml with fenics dolfin. The xml files are
+        passed as a argument to naca_airfoil. naca_airfoil run once for each
+        level and each time produces a drag_ligt.m file. All xml and
+        drag_ligt.m files are uploaded to the container specified in config.
+
+    Args:
+        angle_start (str) : smallest anglemof attack (degrees)
+        angle_stop (str) : biggest angle of attack (degrees)
+        angles (str) : split angle_stop - angle_start into angles parts
+        nodes (str) : number of nodes on one side of airfoil
+        levels (str) : number of refinement steps in meshing
+            0=no refinement 1=one time 2=two times etc...
+        samples (str) : number of samples saved
+        viscocity (str) : the air's viscosity
+        speed (str) : movement speed of wing
+        time (str) : total amount of time
+
+    Returns:
+        None
+
+    '''
     os.chdir(git_dir)
     call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
@@ -58,7 +81,26 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples
 
 @celery.task
 def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
-    call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
+    ''' start_gmsh run gmsh with arguments then converts the .msh
+        files created by gmsh to .xml with fenics dolfin. One .xml file is
+        uploaded for every level.
+
+    Args:
+        angle_start (str) : smallest anglemof attack (degrees)
+        angle_stop (str) : biggest angle of attack (degrees)
+        angles (str) : split angle_stop - angle_start into angles parts
+        nodes (str) : number of nodes on one side of airfoil
+        levels (str) : number of refinement steps in meshing
+            0=no refinement 1=one time 2=two times etc...
+
+    Returns:
+        None
+    '''
+    try:
+        call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
+    except CalledProcessError as e:
+        print e
+
     call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
 
@@ -76,6 +118,21 @@ def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
 
 @celery.task
 def start_airfoil(samples, viscocity, speed, time_step, filename):
+    ''' start_airfoil runs naca_airfoil with supplied arguments and uploads the
+    created file by naca_airfoil drag_ligt.m to the container specified in
+    config.
+
+    Args:
+        samples (str) : number of samples saved
+        viscocity (str) : the air's viscosity
+        speed (str) : movement speed of wing
+        time (str) : total amount of time
+        filename (str): xml file served to naca_airfoil
+
+    Returns:
+        None
+
+    '''
     filename_path = '/home/ubuntu/msh/{}'.format(filename)
 
     if not os.path.exists(filename_path):
