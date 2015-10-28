@@ -10,7 +10,7 @@ import uuid
 
 @celery.task
 def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time_step):
-    os.chdir(get_dir)
+    os.chdir(git_dir)
     call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
