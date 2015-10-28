@@ -34,7 +34,10 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
 
     '''
     os.chdir(git_dir)
-    call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
+    try:
+   	call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
+    except CalledProcessError as e:
+	print e
     call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
 
@@ -43,8 +46,10 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
         filename = '/home/ubuntu/msh/r{}a{}n{}.msh'.format(level, angle_start, nodes)
         filename_xml = filename[:-3]
         filename_xml += 'xml'
-       	check_call('sudo dolfin-convert {} {}'.format(filename, filename_xml), shell=True)
-
+       	try:
+	    check_call('sudo dolfin-convert {} {}'.format(filename, filename_xml), shell=True)
+	except CalledProcessError as e:
+	    print e
         with open(filename_xml) as f:
             conn.put_object('g17container', filename_xml[len(path):],
                             contents=f.read(), content_type='text/plain')
