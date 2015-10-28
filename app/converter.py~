@@ -1,0 +1,4 @@
+
+
+
+buf = StringIO.StringIO(data)
