@@ -4,6 +4,7 @@ from celery import Celery
 from app import celery
 from app import conn
 import time
+import os
 import os.path
 
 @celery.task
@@ -25,6 +26,14 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples
 
         airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
 
+    root_dir = os.getcwd()
+    result_dir = '{}/r{}a{}n{}'.format(root_dir, levels, angle_start, nodes)
+
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+
+    os.chdir(result_dir)
+
 	try:
 		check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
                     samples, viscocity, speed, time_step, filename_xml])
@@ -35,7 +44,8 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples
 	filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):],
                                         samples, viscocity, speed, time_step)
 
-	with open('/home/ubuntu/test/results/drag_ligt.m') as f:
+    result_file = '{}/results/drag_ligt.m'.format(result_dir)
+	with open(result_file) as f:
             conn.put_object('g17container', filename,
                             contents=f.read(), content_type='text/plain')
 
@@ -58,11 +68,6 @@ def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
             conn.put_object('g17container', filename_xml[len(path):],
                             contents=f.read(), content_type='text/plain')
 
-@celery.task
-def convert_msh(filename):
-	filename_xml = filename[:-3]
-	filename_xml += 'xml'
-	call(['sudo', 'dolfin-convert', filename, filename_xml])
 
 @celery.task
 def start_airfoil(samples, viscocity, speed, time_step, filename):
