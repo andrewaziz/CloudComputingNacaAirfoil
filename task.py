@@ -34,7 +34,12 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
 
     '''
     os.chdir(git_dir)
-    call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
+    try:
+        call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
+
+    except CalledProcessError as e:
+        print e
+        
     call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
 
@@ -75,10 +80,12 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
         filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):], samples, viscocity, speed, time_step)
 
         result_file = '{}/results/drag_ligt.m'.format(result_dir)
-        with open(result_file) as f:
-            conn.put_object('g17container', filename,
-                            contents=f.read(), content_type='text/plain')
-
+        try:
+            with open(result_file) as f:
+                conn.put_object('g17container', filename,
+                                contents=f.read(), content_type='text/plain')
+        except IOError as e:
+            print e
 
 
 @celery.task
@@ -112,12 +119,17 @@ def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
         filename = '/home/ubuntu/msh/r{}a{}n{}.msh'.format(level, angle_start, nodes)
         filename_xml = filename[:-3]
         filename_xml += 'xml'
-       	check_call('sudo dolfin-convert {} {}'.format(filename, filename_xml), shell=True)
+        try:
+            check_call('sudo dolfin-convert {} {}'.format(filename, filename_xml), shell=True)
+        except CalledProcessError as e:
+            print e
 
-        with open(filename_xml) as f:
-            conn.put_object('g17container', filename_xml[len(path):],
-                            contents=f.read(), content_type='text/plain')
-
+        try:
+            with open(filename_xml) as f:
+                conn.put_object('g17container', filename_xml[len(path):],
+                                contents=f.read(), content_type='text/plain')
+        except IOError as e:
+            print e
 
 @celery.task
 def start_airfoil(samples, viscocity, speed, time_step, filename):
