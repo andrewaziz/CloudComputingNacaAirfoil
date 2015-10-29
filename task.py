@@ -57,7 +57,7 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
     airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
     for level in range(int(levels) + 1):
         u = str(uuid.uuid4())
-        root_dir = '/home/ubuntu/'
+        root_dir = '/home/ubuntu'
         result_dir = '{}/r{}a{}n{}/{}'.format(root_dir, level, angle_start, nodes, u)
 
         filename_xml = '/home/ubuntu/msh/r{}a{}n{}.xml'.format(level, angle_start, nodes)
