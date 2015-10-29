@@ -133,7 +133,7 @@ def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
 
 @celery.task
 def start_airfoil(samples, viscocity, speed, time_step, filename):
-    ''' start_airfoil runs naca_airfoil with supplied arguments and uploads the
+    ''' Start_airfoil runs naca_airfoil with supplied arguments and uploads the
     created file by naca_airfoil drag_ligt.m to the container specified in
     config.
 
@@ -180,3 +180,41 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
                             contents=f.read(), content_type='text/plain')
     except IOError as e:
         print e
+
+
+
+
+
+
+
+
+@celery.task
+def test(samples, viscosity, speed, time_step, filename):
+    airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
+    u = str(uuid.uuid4())
+    root_dir = '/home/ubuntu'
+    result_dir = '{}/{}/{}'.format(root_dir, filename[:-3], u)
+    filename_xml = '/home/ubuntu/msh/{}'.format(filename)
+
+
+    if not os.path.exists(result_dir):
+        os.makedirs(result_dir)
+        
+        os.chdir(result_dir)
+
+        try:
+            check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
+         	            samples, viscocity, speed, time_step, filename_xml])
+
+        except CalledProcessError as e:
+            print e
+
+        filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):], samples, viscocity, speed, time_step)
+
+        result_file = '{}/results/drag_ligt.m'.format(result_dir)
+        try:
+            with open(result_file) as f:
+                conn.put_object('g17container', filename,
+                                contents=f.read(), content_type='text/plain')
+        except IOError as e:
+            print e
