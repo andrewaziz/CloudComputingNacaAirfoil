@@ -35,11 +35,12 @@ def test():
 	# only produces one .msh file for each call.
 
 	angle_list = [angle_start + step*x for x in range(angles+1)]
+
         res = group([gmsh_convert_airfoil.s(str(x), str(x), str(angles),
-            						nodes, levels, samples,viscocity,
-                                    speed, time_step) for x in angle_list])()
+                        nodes, levels, samples,viscocity,
+                        speed, time_step) for x in angle_list])()
 
-
+        
         return render_template('gmshairfoil.html', form=form)
 
     return render_template('gmshairfoil.html', form=form)
