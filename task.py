@@ -161,7 +161,10 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
 
     object_name = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename,
                                         samples, viscocity, speed, time_step)
-
-    with open('/home/ubuntu/test/results/drag_ligt.m') as f:
-        conn.put_object('g17container', object_name,
-                        contents=f.read(), content_type='text/plain')
+    try:
+        
+        with open('/home/ubuntu/test/results/drag_ligt.m') as f:
+            conn.put_object('g17container', object_name,
+                            contents=f.read(), content_type='text/plain')
+    except IOError as e:
+        print e
