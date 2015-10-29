@@ -2,6 +2,7 @@
 from subprocess import call, check_call, CalledProcessError
 from celery import Celery
 from app import celery, conn, git_dir
+from converter import makePlot # arg0 = path+.m-file, arg2 = path to storage
 import time
 import os
 import os.path
@@ -185,10 +186,14 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
     object_name = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename,
                                         samples, viscocity, speed, time_step)
 
+    plot_path = '{}/s{}v{}s{}t{}'.format(filename,
+                                        samples, viscocity, speed, time_step)
+
     result_file = '{}/results/drag_ligt.m'.format(result_dir)
 
     try:
-        
+        makePlot(result_file, plot_path)
+
         with open(result_file) as f:
             conn.put_object('g17container', object_name,
                             contents=f.read(), content_type='text/plain')

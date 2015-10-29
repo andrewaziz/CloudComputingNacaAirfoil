@@ -25,7 +25,7 @@ runcmd:
     - export OS_PASSWORD="x1xv6565"
 
 
-    - git clone -b parallel https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
+    - git clone -b plot https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
     - pip install -r /home/ubuntu/test/requirements.txt
     - export C_FORCE_ROOT="true"
     - export LC_ALL="en_US.utf-8"

@@ -48,7 +48,7 @@ runcmd:
     - export worker_id="controller"
     - export controller_ip="0.0.0.0"
 
-    - git clone https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
+    - git clone plot https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
     - pip install -r /home/ubuntu/test/requirements.txt
     - export C_FORCE_ROOT="true"
     - export LC_ALL="en_US.utf-8"

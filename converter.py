@@ -35,20 +35,23 @@ def conv(file):
 
     return([lift,drag])
 
-def makePlot(data):
+def makePlot(data, Save):
     tmp = conv(data)
     data = tmp[0]
 
     N = len( data )
     x = np.arange(1, N+1)
     plt.plot(x,data)
-    plt.savefig('plot_lift.png')
+
+    plt.savefig(Save + '/plot_lift.png')
 
     data = tmp[1]
 
     N = len( data )
     x = np.arange(1, N+1)
     plt.plot(x,data)
-    plt.savefig('plot_drag.png')
+    #plt.savefig('plot_drag.png')
+    plt.savefig(Save + '/plot_drag.png')
 
-makePlot(argv[1])
+#makePlot(argv[1], argv[2])
+    
