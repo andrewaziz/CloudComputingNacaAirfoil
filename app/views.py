@@ -4,8 +4,8 @@ import subprocess
 from celery import group, subtask
 from flask import render_template, make_response, redirect, request
 from app import app
-from .forms import LoginForm, GMSHForm, GMSHAirfoilForm, AirfoilForm, TestForm
-from task import start_gmsh, convert_msh, start_airfoil, gmsh_convert_airfoil
+from .forms import GMSHForm, GMSHAirfoilForm, AirfoilForm
+from task import start_gmsh, start_airfoil, gmsh_convert_airfoil
 import urllib2
 from flask import send_file
 
@@ -37,12 +37,18 @@ def test():
         speed = form.angles.data
         time_step = form.time_step.data
         step = ((angle_stop - angle_start) / angles)
-        angle_list = [angle_start + step*x for x in range(angles+1)]
+
+	# We create a list with angles to run with gmsh, gmsh get called
+	# with same value for angle_start and angle_stop to guarantee that gmsh
+	# only produces one .msh file for each call.
+
+	angle_list = [angle_start + step*x for x in range(angles+1)]
+
         res = group([gmsh_convert_airfoil.s(str(x), str(x), str(angles),
-            						nodes, levels, samples,viscocity,
-                                    speed, time_step) for x in angle_list])()
+                        nodes, levels, samples,viscocity,
+                        speed, time_step) for x in angle_list])()
 
-
+        
         return render_template('gmshairfoil.html', form=form)
 
     return render_template('gmshairfoil.html', form=form)
