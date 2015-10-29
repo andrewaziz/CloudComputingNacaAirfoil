@@ -38,11 +38,10 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
    	call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
     except CalledProcessError as e:
 	print e
-=======
+
 def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels, samples, viscocity, speed, time_step):
     os.chdir(git_dir)
     call(['./run.sh', angle_start, angle_stop, angles, nodes, levels])
->>>>>>> 0af5242b06d537737b76ca7d167decb0732880f8
     call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
 

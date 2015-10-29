@@ -30,11 +30,11 @@ def test():
         time_step = form.time_step.data
         step = ((angle_stop - angle_start) / angles)
 
-		# We create a list with angles to run with gmsh, gmsh get called
-		# with same value for angle_start and angle_stop to guarantee that gmsh
-		# only produces one .msh file for each call.
+	# We create a list with angles to run with gmsh, gmsh get called
+	# with same value for angle_start and angle_stop to guarantee that gmsh
+	# only produces one .msh file for each call.
 
-		angle_list = [angle_start + step*x for x in range(angles+1)]
+	angle_list = [angle_start + step*x for x in range(angles+1)]
         res = group([gmsh_convert_airfoil.s(str(x), str(x), str(angles),
             						nodes, levels, samples,viscocity,
                                     speed, time_step) for x in angle_list])()
