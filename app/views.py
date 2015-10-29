@@ -6,13 +6,16 @@ from flask import render_template, make_response, redirect, request
 from app import app
 from .forms import GMSHForm, GMSHAirfoilForm, AirfoilForm
 from task import start_gmsh, start_airfoil, gmsh_convert_airfoil
+from displyContainer import displayTable, getContainerxml
 import urllib2
 
 
 @app.route('/')
 @app.route('/index')
 def index():
-	return render_template('index.html')
+        files = getContainerxml("g17container")
+        fileTable = displayTable(files)
+	return render_template('index.html', fileTable=fileTable)
 
 
 @app.route('/gmshairfoil', methods=['GET', 'POST'])
