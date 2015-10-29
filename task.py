@@ -183,38 +183,67 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
 
 
 
-
-
-
-
-
 @celery.task
-def test(samples, viscosity, speed, time_step, filename):
+def test(samples, viscocity, speed, time_step, filename):
+    ''' Start_airfoil runs naca_airfoil with supplied arguments and uploads the
+    created file by naca_airfoil drag_ligt.m to the container specified in
+    config.
+
+    Args:
+        samples (str) : number of samples saved
+        viscocity (str) : the air's viscosity
+        speed (str) : movement speed of wing
+        time (str) : total amount of time
+        filename (str): xml file served to naca_airfoil
+
+    Returns:
+        None
+
+    '''
+    call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
+    call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
+    os.chdir(git_dir)
+    filename_path = '/home/ubuntu/msh/{}'.format(filename)
+
+    if not os.path.exists(filename_path):
+        os.chdir('/home/ubuntu/msh')
+	response, data = conn.get_object('g17container', filename)
+        filename_path = filename
+    	call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
+    	call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
+        with open(filename, 'w') as f:
+            f.write(data)
+	os.chdir(git_dir)
     airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
+
+    
     u = str(uuid.uuid4())
     root_dir = '/home/ubuntu'
     result_dir = '{}/{}/{}'.format(root_dir, filename[:-3], u)
-    filename_xml = '/home/ubuntu/msh/{}'.format(filename)
+    os.chdir(result_dir)
 
+    
+    try:
+        check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
+         	    samples, viscocity, speed, time_step, filename_path])
 
-    if not os.path.exists(result_dir):
-        os.makedirs(result_dir)
+    except CalledProcessError as e:
+        print e
+
+    object_name = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename,
+                                        samples, viscocity, speed, time_step)
+
+    result_file = '{}/results/drag_ligt.m'.format(result_dir)
+
+    try:
         
-        os.chdir(result_dir)
+        with open(result_file) as f:
+            conn.put_object('g17container', object_name,
+                            contents=f.read(), content_type='text/plain')
+    except IOError as e:
+        print e
 
-        try:
-            check_call(['sudo', '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil',
-         	            samples, viscocity, speed, time_step, filename_xml])
 
-        except CalledProcessError as e:
-            print e
 
-        filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):], samples, viscocity, speed, time_step)
 
-        result_file = '{}/results/drag_ligt.m'.format(result_dir)
-        try:
-            with open(result_file) as f:
-                conn.put_object('g17container', filename,
-                                contents=f.read(), content_type='text/plain')
-        except IOError as e:
-            print e
+
