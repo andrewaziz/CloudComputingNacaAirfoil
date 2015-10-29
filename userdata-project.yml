@@ -17,6 +17,7 @@ runcmd:
     - chown -R ubuntu /home/ubuntu/msh
     - chmod 777 /home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil
     - pip install flower
+    - pip install python-cloudfiles
 
     - rabbitmqctl add_user controller password
     - rabbitmqctl add_vhost host
