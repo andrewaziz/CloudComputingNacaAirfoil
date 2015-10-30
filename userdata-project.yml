@@ -11,47 +11,36 @@ packages:
     - python-swiftclient
 
 runcmd:
+    - export OS_AUTH_URL=http://smog.uppmax.uu.se:5000/v2.0
+    - export OS_TENANT_NAME="ACC-Course" 
+    - export OS_USERNAME="username" 
+    - export OS_PASSWORD="password"
+    - export OS_IMAGE="g17-airfoil"
+    - export OS_FLAVOR="m1.medium" 
+    - export OS_NETWORK="ACC-Course-net"
+    - export OS_SECURITY_KEY="g17key"
+    - export OS_CONTAINER="g17container"
+    
     - mkdir /home/ubuntu/geo
     - mkdir /home/ubuntu/msh
     - chown -R ubuntu /home/ubuntu/geo
     - chown -R ubuntu /home/ubuntu/msh
     - chmod 777 /home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil
+
     - pip install flower
     - pip install python-cloudfiles
 
     - rabbitmqctl add_user controller password
     - rabbitmqctl add_vhost host
     - rabbitmqctl set_permissions -p host controller ".*" ".*" ".*"
-    - rabbitmqctl add_user worker1 password
-    - rabbitmqctl set_permissions -p host worker1 ".*" ".*" ".*"
-    - rabbitmqctl add_user worker2 password
-    - rabbitmqctl set_permissions -p host worker2 ".*" ".*" ".*"
-    - rabbitmqctl add_user worker3 password
-    - rabbitmqctl set_permissions -p host worker3 ".*" ".*" ".*"
-    - rabbitmqctl add_user worker4 password
-    - rabbitmqctl set_permissions -p host worker4 ".*" ".*" ".*"
-    - rabbitmqctl add_user worker5 password
-    - rabbitmqctl set_permissions -p host worker5 ".*" ".*" ".*"
-    - rabbitmqctl add_user worker6 password
-    - rabbitmqctl set_permissions -p host worker6 ".*" ".*" ".*"
-    - rabbitmqctl add_user worker7 password
-    - rabbitmqctl set_permissions -p host worker7 ".*" ".*" ".*"
-    - rabbitmqctl add_user worker8 password
-    - rabbitmqctl set_permissions -p host worker8 ".*" ".*" ".*"
-
-    - export OS_AUTH_URL=http://smog.uppmax.uu.se:5000/v2.0
-    - export OS_TENANT_NAME="ACC-Course"
-    - export OS_USERNAME="user"
-    - export OS_PASSWORD="password"
-
 
     - export worker_id="controller"
     - export controller_ip="0.0.0.0"
+    - export C_FORCE_ROOT="true"
+    - export LC_ALL="en_US.utf-8"
 
     - git clone https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
     - pip install -r /home/ubuntu/test/requirements.txt
-    - export C_FORCE_ROOT="true"
-    - export LC_ALL="en_US.utf-8"
     - cd /home/ubuntu/test; python run.py &
     - cd /home/ubuntu/test; celery worker -A app.celery --concurrency=2 &
     - cd /home/ubuntu/test; celery -A app.celery flower --port=5001
