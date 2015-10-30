@@ -17,7 +17,7 @@ runcmd:
     - chmod 777 /home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil
 
     - export worker_id="worker1"
-    - export controller_ip="130.238.29.31"
+    - export controller_ip="130.238.29.76"
 
     - export OS_AUTH_URL=http://smog.uppmax.uu.se:5000/v2.0
     - export OS_TENANT_NAME="ACC-Course"
