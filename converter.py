@@ -53,5 +53,5 @@ def makePlot(data, Save):
     #plt.savefig('plot_drag.png')
     plt.savefig(Save + '/plot_drag.png')
 
-#makePlot(argv[1], argv[2])
+makePlot(argv[1], argv[2])
     

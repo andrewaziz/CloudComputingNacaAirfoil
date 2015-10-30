@@ -192,8 +192,9 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
     result_file = '{}/results/drag_ligt.m'.format(result_dir)
 
     try:
-        makePlot(result_file, plot_path)
-
+        #makePlot(result_file, plot_path)
+        call('sudo python /home/ubuntu/converter.py {}'.format(result_file) + " {}".format(plot_path), shell=True)
+        
         with open(result_file) as f:
             conn.put_object('g17container', object_name,
                             contents=f.read(), content_type='text/plain')
