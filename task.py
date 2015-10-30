@@ -81,6 +81,9 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
         filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):], samples, viscocity, speed, time_step)
 
         result_file = '{}/results/drag_ligt.m'.format(result_dir)
+        
+        call('sudo python /home/ubuntu/test/converter.py {}'.format(result_file) + " {}".format(result_dir), shell=True)
+        
         try:
             with open(result_file) as f:
                 conn.put_object('g17container', filename,
@@ -193,7 +196,7 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
 
     try:
         #makePlot(result_file, plot_path)
-        call('sudo python /home/ubuntu/converter.py {}'.format(result_file) + " {}".format(plot_path), shell=True)
+        call('sudo python /home/ubuntu/test/converter.py {}'.format(result_file) + " {}".format(result_dir), shell=True)
         
         with open(result_file) as f:
             conn.put_object('g17container', object_name,
