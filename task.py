@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from subprocess import call, check_call, CalledProcessError
 from celery import Celery
-from app import celery, conn, git_dir
+from app import celery, conn, git_dir, container
 #from converter import makePlot # arg0 = path+.m-file, arg2 = path to storage
 import time
 import os
@@ -54,7 +54,7 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
 	except CalledProcessError as e:
 	    print e
         with open(filename_xml) as f:
-            conn.put_object('g17container', filename_xml[len(path):],
+            conn.put_object(container, filename_xml[len(path):],
                             contents=f.read(), content_type='text/plain')
 
     airfoil_path = '/home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil'
@@ -86,13 +86,13 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
         
         try:
             with open(result_file) as f:
-                conn.put_object('g17container', filename,
+                conn.put_object(container, filename,
                                 contents=f.read(), content_type='text/plain')
             with open(result_dir + '/plot_lift.png') as f:
-                conn.put_object('g17container', filename[:-11]+"plot_lift.png",
+                conn.put_object(container, filename[:-11]+"plot_lift.png",
                                 contents=f.read(), content_type='text/plain')
             with open(result_dir + '/plot_drag.png') as f:
-                conn.put_object('g17container', filename[:-11]+"plot_drag.png",
+                conn.put_object(container, filename[:-11]+"plot_drag.png",
                                 contents=f.read(), content_type='text/plain')
         except IOError as e:
             print e
@@ -136,7 +136,7 @@ def start_gmsh(angle_start, angle_stop, angles, nodes, levels):
 
         try:
             with open(filename_xml) as f:
-                conn.put_object('g17container', filename_xml[len(path):],
+                conn.put_object(container, filename_xml[len(path):],
                                 contents=f.read(), content_type='text/plain')
         except IOError as e:
             print e
@@ -166,7 +166,7 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
 
     if not os.path.exists(filename_path):
         os.chdir('/home/ubuntu/msh')
-	response, data = conn.get_object('g17container', filename)
+	response, data = conn.get_object(container, filename)
         filename_path = filename
     	call('sudo chown -R ubuntu /home/ubuntu/msh', shell=True)
     	call('sudo chown -R ubuntu /home/ubuntu/geo', shell=True)
@@ -205,13 +205,13 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
         call('sudo python /home/ubuntu/test/converter.py {}'.format(result_file) + " {}".format(result_dir), shell=True)
         
         with open(result_file) as f:
-            conn.put_object('g17container', object_name,
+            conn.put_object(container, object_name,
                             contents=f.read(), content_type='text/plain')
             with open(result_dir + '/plot_lift.png') as f:
-                conn.put_object('g17container', object_name[:-11]+"plot_lift.png",
+                conn.put_object(container, object_name[:-11]+"plot_lift.png",
                                 contents=f.read(), content_type='text/plain')
             with open(result_dir + '/plot_drag.png') as f:
-                conn.put_object('g17container', object_name[:-11]+"plot_drag.png",
+                conn.put_object(container, object_name[:-11]+"plot_drag.png",
                                 contents=f.read(), content_type='text/plain')
     except IOError as e:
         print e
