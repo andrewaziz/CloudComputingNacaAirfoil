@@ -2,6 +2,7 @@
 from subprocess import call, check_call, CalledProcessError
 from celery import Celery
 from app import celery, conn, git_dir
+#from converter import makePlot # arg0 = path+.m-file, arg2 = path to storage
 import time
 import os
 import os.path
@@ -80,9 +81,18 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
         filename = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename_xml[len(path):], samples, viscocity, speed, time_step)
 
         result_file = '{}/results/drag_ligt.m'.format(result_dir)
+        
+        call('sudo python /home/ubuntu/test/converter.py {}'.format(result_file) + " {}".format(result_dir), shell=True)
+        
         try:
             with open(result_file) as f:
                 conn.put_object('g17container', filename,
+                                contents=f.read(), content_type='text/plain')
+            with open(result_dir + '/plot_lift.png') as f:
+                conn.put_object('g17container', filename[:-11]+"plot_lift.png",
+                                contents=f.read(), content_type='text/plain')
+            with open(result_dir + '/plot_drag.png') as f:
+                conn.put_object('g17container', filename[:-11]+"plot_drag.png",
                                 contents=f.read(), content_type='text/plain')
         except IOError as e:
             print e
@@ -185,13 +195,24 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
     object_name = '{}/s{}v{}s{}t{}/drag_lift.m'.format(filename,
                                         samples, viscocity, speed, time_step)
 
+    plot_path = '{}/s{}v{}s{}t{}'.format(filename,
+                                        samples, viscocity, speed, time_step)
+
     result_file = '{}/results/drag_ligt.m'.format(result_dir)
 
     try:
+  
+        call('sudo python /home/ubuntu/test/converter.py {}'.format(result_file) + " {}".format(result_dir), shell=True)
         
         with open(result_file) as f:
             conn.put_object('g17container', object_name,
                             contents=f.read(), content_type='text/plain')
+            with open(result_dir + '/plot_lift.png') as f:
+                conn.put_object('g17container', object_name[:-11]+"plot_lift.png",
+                                contents=f.read(), content_type='text/plain')
+            with open(result_dir + '/plot_drag.png') as f:
+                conn.put_object('g17container', object_name[:-11]+"plot_drag.png",
+                                contents=f.read(), content_type='text/plain')
     except IOError as e:
         print e
 

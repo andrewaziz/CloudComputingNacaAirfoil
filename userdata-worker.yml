@@ -28,10 +28,9 @@ runcmd:
 
     - export worker_id="controller"
     - export controller_ip="130.238.29.111"
-
     - export C_FORCE_ROOT="true"
     - export LC_ALL="en_US.utf-8"
 
-    - git clone -b parallel https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
+    - git clone https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
     - pip install -r /home/ubuntu/test/requirements.txt
     - cd /home/ubuntu/test; celery worker -A app.celery --concurrency=1 &
