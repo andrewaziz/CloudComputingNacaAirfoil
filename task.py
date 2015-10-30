@@ -207,6 +207,12 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
         with open(result_file) as f:
             conn.put_object('g17container', object_name,
                             contents=f.read(), content_type='text/plain')
+            with open(result_dir + '/plot_lift.png') as f:
+                conn.put_object('g17container', object_name[:-11]+"plot_lift.png",
+                                contents=f.read(), content_type='text/plain')
+            with open(result_dir + '/plot_drag.png') as f:
+                conn.put_object('g17container', object_name[:-11]+"plot_drag.png",
+                                contents=f.read(), content_type='text/plain')
     except IOError as e:
         print e
 

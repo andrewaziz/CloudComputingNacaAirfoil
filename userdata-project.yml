@@ -41,15 +41,14 @@ runcmd:
 
     - export OS_AUTH_URL=http://smog.uppmax.uu.se:5000/v2.0
     - export OS_TENANT_NAME="ACC-Course"
-    - export OS_USERNAME="adha2015"
-    - export OS_PASSWORD="x1xv6565"
+    - export OS_USERNAME="username"
+    - export OS_PASSWORD="password"
 
 
     - export worker_id="controller"
     - export controller_ip="0.0.0.0"
 
-    - git clone -b plot https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
-    - cd /home/ubuntu/test/; git checkout plot
+    - git clone https://github.com/andrewaziz/CloudComputingNacaAirfoil.git /home/ubuntu/test
     - pip install -r /home/ubuntu/test/requirements.txt
     - export C_FORCE_ROOT="true"
     - export LC_ALL="en_US.utf-8"
