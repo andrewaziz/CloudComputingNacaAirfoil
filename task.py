@@ -88,6 +88,12 @@ def gmsh_convert_airfoil(angle_start, angle_stop, angles, nodes, levels,
             with open(result_file) as f:
                 conn.put_object('g17container', filename,
                                 contents=f.read(), content_type='text/plain')
+            with open(result_dir + '/plot_lift.png') as f:
+                conn.put_object('g17container', filename[:-11]+"plot_lift.png",
+                                contents=f.read(), content_type='text/plain')
+            with open(result_dir + '/plot_drag.png') as f:
+                conn.put_object('g17container', filename[:-11]+"plot_drag.png",
+                                contents=f.read(), content_type='text/plain')
         except IOError as e:
             print e
 
@@ -195,7 +201,7 @@ def start_airfoil(samples, viscocity, speed, time_step, filename):
     result_file = '{}/results/drag_ligt.m'.format(result_dir)
 
     try:
-        #makePlot(result_file, plot_path)
+  
         call('sudo python /home/ubuntu/test/converter.py {}'.format(result_file) + " {}".format(result_dir), shell=True)
         
         with open(result_file) as f:
