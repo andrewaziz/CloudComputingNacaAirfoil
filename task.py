@@ -2,7 +2,7 @@
 from subprocess import call, check_call, CalledProcessError
 from celery import Celery
 from app import celery, conn, git_dir
-from converter import makePlot # arg0 = path+.m-file, arg2 = path to storage
+#from converter import makePlot # arg0 = path+.m-file, arg2 = path to storage
 import time
 import os
 import os.path
