@@ -3,7 +3,7 @@ import glob
 import subprocess
 from celery import group, subtask
 from flask import render_template, make_response, redirect, request
-from app import app
+from app import app, container
 from .forms import GMSHForm, GMSHAirfoilForm, AirfoilForm
 from task import start_gmsh, start_airfoil, gmsh_convert_airfoil
 import urllib2
@@ -93,7 +93,7 @@ def airfoil():
 
 @app.route('/api/v1.0/<xml>', methods=['GET'])
 def get_xml_file(xml):
-	url = 'http://smog.uppmax.uu.se:8080/swift/v1/g17container/{}'.format(xml)
+	url = 'http://smog.uppmax.uu.se:8080/swift/v1/{}/{}'.format(container, xml)
 	data = urllib2.urlopen(url)
 
 	response = make_response(data.read())
@@ -103,7 +103,7 @@ def get_xml_file(xml):
 
 @app.route('/api/v1.0/<xml>/<settings>/<f>', methods=['GET'])
 def get_draglift(xml, settings, f):
-	url = 'http://smog.uppmax.uu.se:8080/swift/v1/g17container/{}/{}/{}'.format(xml, settings, f)
+	url = 'http://smog.uppmax.uu.se:8080/swift/v1/{}/{}/{}/{}'.format(container, xml, settings, f)
 	data = urllib2.urlopen(url)
 
 	response = make_response(data.read())

@@ -11,6 +11,7 @@ app.config['WTF_CSRF_ENABLED'] = True
 app.config['SECRET_KEY'] = 'you-will-never-guess'
 
 git_dir = '/home/ubuntu/test'
+container = os.environ['OS_CONTAINER']
 
 conf = {'user':os.environ['OS_USERNAME'],
         'key':os.environ['OS_PASSWORD'],
