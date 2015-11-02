@@ -12,8 +12,8 @@ packages:
 runcmd:
     - export OS_AUTH_URL=http://smog.uppmax.uu.se:5000/v2.0
     - export OS_TENANT_NAME="ACC-Course" 
-    - export OS_USERNAME="adha2015" 
-    - export OS_PASSWORD="x1xv6565"
+    - export OS_USERNAME="username" 
+    - export OS_PASSWORD="password"
     - export OS_IMAGE="g17-airfoil"
     - export OS_FLAVOR="m1.medium" 
     - export OS_NETWORK="ACC-Course-net"
