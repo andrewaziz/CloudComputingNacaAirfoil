@@ -9,20 +9,37 @@ from task import start_gmsh, start_airfoil, gmsh_convert_airfoil
 import urllib2
 from flask import send_file
 
+import os
+from sys import argv
+import time
+from novaclient.client import Client
+import uuid
+import swiftclient.client
+        
 
 @app.route('/')
 @app.route('/index')
 def index():
 	return render_template('index.html')
 
+@app.route('/result')
+def gset_image():
+    result = ""
 
-@app.route('/plot')
-def get_image():
-    #filename = 'plot_lift.png'
-    filename = 'plot_drag.png'
-    return send_file(filename, mimetype='image/png')
+    config = {'user':os.environ['OS_USERNAME'], 
+          'key':os.environ['OS_PASSWORD'],
+          'tenant_name':os.environ['OS_TENANT_NAME'],
+          'authurl':os.environ['OS_AUTH_URL']}
+    
+    conn = swiftclient.client.Connection(auth_version=2, **config)
 
-
+    container_name = "g17container"
+    tmp = conn.get_container(container_name)
+    for num in range(0,len(tmp[1])):
+        item = tmp[1][num]['name']
+        result = result + '<a href="http://smog.uppmax.uu.se:8080/swift/v1/g17container/' + item  + '" rel="nofollow">' + item + '</a> <br> '
+    return(result)
+                
 @app.route('/gmshairfoil', methods=['GET', 'POST'])
 def test():
     form = GMSHAirfoilForm()

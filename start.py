@@ -3,7 +3,7 @@ from instance import start_instance, substitute
 number_of_workers = raw_input('number of workers: ')
 number_of_workers = int(number_of_workers)
 
-controller_ip = start_instance('g17control', 'userdata-project.yml', True)
+controller_ip = start_instance('g17control', 'userdata-controller.yml', True)
 
 
 substitute('    - export controller_ip="{}"'.format(controller_ip),

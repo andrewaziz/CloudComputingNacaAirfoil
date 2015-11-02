@@ -12,8 +12,8 @@ packages:
 runcmd:
     - export OS_AUTH_URL=http://smog.uppmax.uu.se:5000/v2.0
     - export OS_TENANT_NAME="ACC-Course" 
-    - export OS_USERNAME="user" 
-    - export OS_PASSWORD="password"
+    - export OS_USERNAME="adha2015" 
+    - export OS_PASSWORD="x1xv6565"
     - export OS_IMAGE="g17-airfoil"
     - export OS_FLAVOR="m1.medium" 
     - export OS_NETWORK="ACC-Course-net"
@@ -27,7 +27,7 @@ runcmd:
     - chmod 777 /home/ubuntu/naca_airfoil/navier_stokes_solver/airfoil
 
     - export worker_id="controller"
-    - export controller_ip="130.238.29.187"
+    - export controller_ip="130.238.29.120"
     - export C_FORCE_ROOT="true"
     - export LC_ALL="en_US.utf-8"
 
